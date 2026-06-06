@@ -35,6 +35,12 @@ struct context_t{
 
    /* calle saved ints*/
     uint64_t rbx;
+
+    uint64_t r8;
+    uint64_t r9;
+    uint64_t r10;
+    uint64_t r11;
+    
     uint64_t r12;
     uint64_t r13;
     uint64_t r14;

@@ -1,4 +1,4 @@
-name: C Build
+name: CI
 
 on:
   push:
@@ -6,19 +6,19 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # x86_64 — only arch supported right now
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install compiler tools
+      - name: Install toolchain
         run: |
           sudo apt update
           sudo apt install -y build-essential
 
-      - name: Build project
+      - name: Build library
         run: make
 
-      - name: Run executable
-        run: ./main
+      - name: Build & run benchmark
+        run: make bench

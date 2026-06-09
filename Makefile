@@ -1,40 +1,48 @@
-CC := gcc
+CC      := gcc
+CFLAGS  := -g -fno-omit-frame-pointer -Wall -Wextra -Iinclude -Isrc/arch/x86_64
 
-CFLAGS := -g -fno-omit-frame-pointer
+TARGET  := tachyon
 
-TARGET := main
+# ─── Sources ──────────────────────────────────────────────────────────────────
 
-# Automatically find source files
-C_SOURCES := $(shell find . -name "*.c")
-ASM_SOURCES := $(shell find . -name "*.S")
+SRC_C   := $(shell find src/ -name "*.c")
+SRC_ASM := $(shell find src/arch/x86_64 -name "*.S")
 
-# Generate object file names
-C_OBJECTS := $(C_SOURCES:.c=.o)
-ASM_OBJECTS := $(ASM_SOURCES:.S=.o)
+OBJ_C   := $(SRC_C:.c=.o)
+OBJ_ASM := $(SRC_ASM:.S=.o)
 
-OBJECTS := $(C_OBJECTS) $(ASM_OBJECTS)
+OBJECTS := $(OBJ_C) $(OBJ_ASM)
 
-# Default target
+# ─── Default ──────────────────────────────────────────────────────────────────
+.PHONY: all run bench clean
+
 all: $(TARGET)
 
-# Link all object files
+# Link
 $(TARGET): $(OBJECTS)
 	$(CC) $(CFLAGS) $^ -o $@
 
-# Compile C files
+# Compile C
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Compile Assembly files
+# Compile ASM
 %.o: %.S
 	$(CC) -c $< -o $@
 
-# Run pinned to CPU core 0
+# ─── Benchmark ────────────────────────────────────────────────────────────────
+
+BENCH_SRC := benchmarks/ctx_switch_bench.c
+BENCH_BIN := benchmarks/ctx_switch_bench
+
+bench: $(OBJECTS)
+	$(CC) $(CFLAGS) $(BENCH_SRC) $(OBJECTS) -o $(BENCH_BIN)
+	taskset -c 0 ./$(BENCH_BIN)
+
+# ─── Run ──────────────────────────────────────────────────────────────────────
 run: $(TARGET)
 	taskset -c 0 ./$(TARGET)
 
-# Clean generated files
+# ─── Clean ────────────────────────────────────────────────────────────────────
 clean:
-	rm -f $(TARGET) $(OBJECTS)
-
-.PHONY: all run clean
+	rm -f $(TARGET) $(OBJECTS) $(BENCH_BIN)

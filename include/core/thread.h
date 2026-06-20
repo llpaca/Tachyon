@@ -1,12 +1,12 @@
 #include "../arch/x86_64/context.h"
 #include "stddef.h"
 
-enum State{
+typedef enum{
     READY,
     RUNNING,
     BLOCKED,
     DEAD
-};
+}State;
 
 typedef
 struct thread_t{

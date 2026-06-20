@@ -1,6 +1,6 @@
 #include "include/tachyon.h"
 
-void worker(){
+void worker(void* arg){
 
 }
 

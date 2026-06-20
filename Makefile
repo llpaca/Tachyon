@@ -2,14 +2,14 @@ CC      := gcc
 AR      := ar
 CFLAGS  := -g -fno-omit-frame-pointer -Wall -Wextra -Iinclude -Isrc/arch/x86_64
 
-# ─── Build dir ────────────────────────────────────────────────────────────────
+# Build dir 
 BUILD       := build
 OBJ_DIR     := $(BUILD)/obj
 BIN_DIR     := $(BUILD)/bin
 
 TARGET      := $(BUILD)/libtachyon.a
 
-# ─── Sources ──────────────────────────────────────────────────────────────────
+# Sources
 SRC_C       := $(shell find src/ -name "*.c")
 SRC_ASM     := $(shell find src/arch/x86_64 -name "*.S")
 
@@ -20,7 +20,7 @@ OBJ_ASM     := $(patsubst %,$(OBJ_DIR)/%.o,$(SRC_ASM))
 
 OBJECTS     := $(OBJ_C) $(OBJ_ASM)
 
-# ─── Default ──────────────────────────────────────────────────────────────────
+# Default
 .PHONY: all bench clean
 
 all: $(TARGET)
@@ -39,7 +39,7 @@ $(OBJ_DIR)/%.S.o: %.S | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
 	$(CC) -c $< -o $@
 
-# ─── Dir rules ────────────────────────────────────────────────────────────────
+# Dir rules 
 $(BUILD):
 	@mkdir -p $(BUILD)
 
@@ -49,7 +49,7 @@ $(OBJ_DIR):
 $(BIN_DIR):
 	@mkdir -p $(BIN_DIR)
 
-# ─── Benchmark ────────────────────────────────────────────────────────────────
+# Benchmark 
 BENCH_SRC   := benchmarks/ctx_switch_bench.c
 BENCH_BIN   := $(BIN_DIR)/ctx_switch_bench
 
@@ -57,7 +57,7 @@ bench: $(TARGET) | $(BIN_DIR)
 	$(CC) $(CFLAGS) $(BENCH_SRC) -L$(BUILD) -ltachyon -o $(BENCH_BIN)
 	taskset -c 0 $(BENCH_BIN)
 
-# ─── Clean ────────────────────────────────────────────────────────────────────
+# Clean
 # Just nuke build/ — source tree stays untouched
 clean:
 	rm -rf $(BUILD)

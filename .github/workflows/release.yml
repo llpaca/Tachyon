@@ -23,14 +23,17 @@ jobs:
           make clean
           make
 
+      - name: Run tests
+        run: make test
+
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
         with:
           name: tachyon-${{ github.ref_name }}-linux-x86_64
-          path: tachyon
+          path: build/libtachyon.a
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: tachyon
+          files: build/libtachyon.a
           generate_release_notes: true

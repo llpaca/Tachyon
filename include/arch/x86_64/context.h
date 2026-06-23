@@ -36,6 +36,9 @@ struct context_t{
    /* calle saved ints*/
     uint64_t rbx;
 
+    uint64_t rdi;   // 1st argument
+    uint64_t rsi;   // 2nd argument if needed
+
     uint64_t r8;
     uint64_t r9;
     uint64_t r10;

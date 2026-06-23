@@ -36,18 +36,16 @@ struct context_t{
    /* calle saved ints*/
     uint64_t rbx;
 
-    uint64_t rdi;   // 1st argument
-    uint64_t rsi;   // 2nd argument if needed
-
     uint64_t r8;
     uint64_t r9;
     uint64_t r10;
     uint64_t r11;
     
-    uint64_t r12;
-    uint64_t r13;
+    uint64_t r12;   // arg
+    uint64_t r13;   // fn
     uint64_t r14;
     uint64_t r15;
 }context_t;
 
 void ctx_switch(context_t* old_ctx, context_t* new_ctx);
+void ctx_save(context_t* ctx);

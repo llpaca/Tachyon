@@ -25,19 +25,20 @@ ctx_switch:
     /* flags also i will like to save */
     /* 24(%rdi) */
     pushfq
-    popq 24(%rdi)
-    movq %rbx, 32(%rdi)
-    movq %r12, 40(%rdi)
-    movq %r13, 48(%rdi)
-    movq %r14, 56(%rdi)
-    movq %r15, 64(%rdi)
+    popq 24(%rdi)       /* rflags*/
+    movq %rbx, 32(%rdi) /* rbx */
+
+    movq %r12, 72(%rdi) 
+    movq %r13, 80(%rdi)
+    movq %r14, 88(%rdi)
+    movq %r15, 96(%rdi)
 
     /* load the context to the regis */
     movq 32(%rsi), %rbx
-    movq 40(%rsi), %r12
-    movq 48(%rsi), %r13
-    movq 56(%rsi), %r14
-    movq 64(%rsi), %r15
+    movq 72(%rsi), %r12
+    movq 80(%rsi), %r13
+    movq 88(%rsi), %r14
+    movq 96(%rsi), %r15
 
     movq 16(%rsi), %rbp
 
@@ -49,3 +50,30 @@ ctx_switch:
 
     pushq 0(%rsi)
     ret
+
+.globl ctx_save
+.type ctx_save, @function
+ctx_save:
+    /* rdi -> context to save into */
+    movq (%rsp),  %rax
+    movq %rax,    0(%rdi)    /* rip */
+    leaq 8(%rsp), %rax
+    movq %rax,    8(%rdi)    /* rsp */
+    movq %rbp,    16(%rdi)   /* rbp */
+    pushfq
+    popq          24(%rdi)   /* rflags */
+    movq %rbx,    32(%rdi)   /* rbx */
+    movq %r12,    72(%rdi)
+    movq %r13,    80(%rdi)
+    movq %r14,    88(%rdi)
+    movq %r15,    96(%rdi)
+    ret                      /* just saves and returns, no switch */
+
+.globl thread_entry
+.type thread_entry, @function
+thread_entry:
+    movq %r12, %rdi      /* arg → rdi (1st arg per SysV ABI) */
+    callq *%r13          /* call fn(arg)                      */
+    callq tachyon_thread_exit
+
+.section .note.GNU-stack,"",@progbits

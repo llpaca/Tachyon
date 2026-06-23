@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
-#include "context.h"
+#include "arch/x86_64/context.h"
 
 context_t main_ctx;
 context_t task_ctx;

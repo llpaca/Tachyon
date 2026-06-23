@@ -57,6 +57,19 @@ bench: $(TARGET) | $(BIN_DIR)
 	$(CC) $(CFLAGS) $(BENCH_SRC) -L$(BUILD) -ltachyon -o $(BENCH_BIN)
 	taskset -c 0 $(BENCH_BIN)
 
+# Tests
+TEST_SRCS := $(shell find test/ -name "*.test.c")
+TEST_BINS := $(patsubst test/%.test.c,$(BIN_DIR)/%,$(TEST_SRCS))
+
+test: $(TEST_BINS)
+	@for t in $(TEST_BINS); do \
+		echo "running $$t"; \
+		$$t; \
+	done
+
+$(BIN_DIR)/%: test/%.test.c $(TARGET) | $(BIN_DIR)
+	$(CC) $(CFLAGS) $< -L$(BUILD) -ltachyon -o $@
+
 # Clean
 # Just nuke build/ — source tree stays untouched
 clean:

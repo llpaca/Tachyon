@@ -19,9 +19,17 @@ jobs:
 
       - name: Build library
         run: make
+  benchmark:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Build & run benchmark
-        run: make bench
+        run: |
+          make
+          make bench
 
       - name: Run tests
         run: make test
